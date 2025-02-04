@@ -9,6 +9,7 @@ function LoginPage() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const { login, errors: loginErrors, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -31,7 +32,7 @@ function LoginPage() {
           </div>
         ))}
         <h1 className="text-2xl font-bold text-white text-ce">Login</h1>
-        <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+        <form autoComplete="off" onSubmit={onSubmit}>
           <input
             type="email"
             {...register("email", { required: true })}

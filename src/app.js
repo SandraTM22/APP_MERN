@@ -20,7 +20,7 @@ app.use(
 );
 
 //todas las rutas de authRoutes empiecen con /api
-app.use("/api", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api", tasksRouter);
 app.listen(4400, () => {
   console.log("🔥 Servidor corriendo en http://localhost:4400");

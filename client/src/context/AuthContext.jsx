@@ -43,14 +43,14 @@ export const AuthProvider = ({ children }) => {
       const res = await loginRequest(user);
       setIsAuthenticated(true);
       setUser(res.data);
-      //console.log(res);
+      console.log(res);
     } catch (error) {
-      //console.log(error.response.data);
-      if (Array.isArray(error.response.data)) {
-        setErrors(error.response.data); // If the backend sends an array, save it directly
-      } else {
-        setErrors([error.response.data.message || "Error desconocido"]); // Convert to array if it is a string
-      }
+      console.error(error);
+      // if (Array.isArray(error.response.data)) {
+      //   setErrors(error.response.data); // If the backend sends an array, save it directly
+      // } else {
+      //   setErrors([error.response.data.message || "Error desconocido"]); // Convert to array if it is a string
+      // }
     }
   };
 
@@ -106,9 +106,9 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         signup,
-        isAuthenticated,
-        errors,
         login,
+        isAuthenticated,
+        errors,        
       }}
     >
       {children}

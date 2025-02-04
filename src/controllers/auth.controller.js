@@ -5,31 +5,38 @@ import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config.js";
 
 export const register = async (req, res) => {
-  //debugging
-  console.log("🔥 Datos recibidos en backend:", req.body);
-  const { username, email, password } = req.body;
-
   try {
+    //debugging
+    console.log("🔥 Datos recibidos en backend:", req.body);
+
+    const { username, email, password } = req.body;
     //look for the user in the db
     const userFound = await User.findOne({ email });
-    if (userFound) return res.status(400).json(["El email ya está registrado"]);
+    if (userFound)
+      return res.status(400).json({
+        message: ["Este email ya está en uso"],
+      });
 
-    //Para encriptar la contrasña
+    //To hash the password
     const paswordHash = await bcrypt.hash(password, 10);
+
+    //To create the user
     const newUser = new User({
       username,
       email,
       password: paswordHash,
     });
-    //para guardar en la bbdd
+
+    //To save the user in the database
     const userSaved = await newUser.save();
 
-    //Creamos Token para sesion
+    //To create access token
     const token = await createAccessToken({ id: userSaved.id });
+
     res.cookie("token", token, {
       sameSite: "none",
       secure: true,
-      httpOnly: false,
+      //httpOnly: false,
     });
 
     //Datos que vamos a mostrar en el Front
@@ -46,20 +53,18 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
-    //Buscamos el usuario en la bbdd
+    const { email, password } = req.body;
+
+    //To find the user in the database
     const userFound = await User.findOne({ email });
 
-    //Si no existe el usuario
     if (!userFound)
       return res.status(400).json({ message: "Usuario no encontrado" });
 
-    //Comparamos la contraseña
+    //to compare the password
     const isMatch = await bcrypt.compare(password, userFound.password);
 
-    //Si la contraseña no es correcta
     if (!isMatch)
       return res.status(400).json({ message: "Contraseña incorrecta" });
 
